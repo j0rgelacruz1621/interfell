@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,7 +14,8 @@ import banner from '../img/auth.jpg';
 import TextField from '@mui/material/TextField';
 import LoginIcon from '@mui/icons-material/Login';
 import Logo from '../img/logo1.png';
-
+import * as Yup from 'yup';
+import axios from 'axios';
 import { useFormik } from 'formik';
 
 const useStyles = makeStyles((theme) => ({
@@ -45,8 +47,49 @@ const useStyles = makeStyles((theme) => ({
 export default function Login(){
   const classes = useStyles();
 
-  const handleSubmit = () => {
-    console.log('este es mi formulario');
+  let token = '';
+  const formik = useFormik({
+    initialValues: initialValues(),
+    validationSchema: Yup.object({
+      username: Yup.string().required('Username is required'),
+      password: Yup.string().required('Password is required')
+    }), 
+    onSubmit: async formValues => {
+      try{
+        let encode = btoa(formValues.username+':'+formValues.password);
+        var config = {
+          method: 'post',
+          url: 'https://apify.epayco.co/login/mail',
+          headers: { 
+            'Authorization': 'Basic '+ encode
+          }
+        };
+        
+        axios(config)
+        .then(function (response) {
+          if(response.data){
+            token = response.data.token;
+            routeChange();
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+        
+        
+        
+      } catch(error){
+        console.log('error', error.message);
+      }
+     
+    }
+    
+  });
+
+  const history = useHistory();
+  const routeChange = () =>{ 
+    let path = `/get-bilind`; 
+    history.push(path, {params:token});
   }
 
   return (
@@ -74,10 +117,25 @@ export default function Login(){
             <Typography gutterBottom variant="h5" component="h2">
               Login
             </Typography>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={formik.handleSubmit}>
               <div >
-                <TextField id="outlined-basic" label="User" variant="outlined" type='text' style={{marginRight:'2%'}}/>
-                <TextField id="outlined-basic" label="Password" variant="outlined" type='password'/>
+                <TextField 
+                  id="outlined-basic" 
+                  label="User" variant="outlined" 
+                  type='text' style={{marginRight:'2%'}}
+                  name="username" 
+                  onChange={formik.handleChange} 
+                  error={formik.errors.username && true} 
+                />
+                <TextField 
+                id="outlined-basic" 
+                label="Password" 
+                variant="outlined" 
+                type='password'
+                name="password" 
+                onChange={formik.handleChange} 
+                error={formik.errors.password && true} 
+                />
               </div>
               
               <br /><br />
@@ -91,4 +149,12 @@ export default function Login(){
     </Card>
     </div>
   )
+}
+
+function initialValues() {
+  return {
+    username: '',
+    password: ''
+
+  } 
 }

@@ -14,6 +14,10 @@ import Bilind from '../img/factura.jpg';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import SendIcon from '@mui/icons-material/Send';
+import { useLocation } from "react-router-dom";
+import axios from 'axios';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,10 +42,56 @@ const useStyles = makeStyles((theme) => ({
 
 export default function GetBilind(){
   const classes = useStyles();
+  const location = useLocation();
+  var token = location.state.params;
+  const formik = useFormik({
+    initialValues: initialValues(),
+    validationSchema: Yup.object({
+      document: Yup.string().required('Número de identificación del usuario requerido')
+    }), 
+    onSubmit: async formValues => {
+      try{
+        var data = JSON.stringify({
+          "projectId": 29,
+          "document": formValues.document
+        });
 
-  const handleSubmit = () => {
-    console.log('este es mi formulario');
-  }
+        var config = {
+          method: 'post',
+          url: 'https://apify.epayco.co/billcollect/invoices/consult',
+          headers: { 
+            'Authorization': 'Bearer '+ token, 
+            'Content-Type': 'application/json'
+          },
+          data : data
+        };
+
+        axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+        
+        axios(config)
+        .then(function (response) {
+          console.log('data bilind',response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+        
+        
+        
+      } catch(error){
+        console.log('error', error.message);
+      }
+     
+    }
+    
+  });
 
   return (
     <div>
@@ -68,8 +118,16 @@ export default function GetBilind(){
             <Typography gutterBottom variant="h5" component="h2">
               Consulta tu factura
             </Typography>
-              <form onSubmit={handleSubmit}>
-              <TextField id="outlined-basic" label="Numero de documento" variant="outlined" />
+              <form onSubmit={formik.handleSubmit}>
+                <TextField 
+                  id="outlined-basic" 
+                  label="Número de identificación del usuario" 
+                  variant="outlined" 
+                  type='text' style={{marginRight:'2%'}}
+                  name="document" 
+                  onChange={formik.handleChange} 
+                  error={formik.errors.document && true} 
+                />
                 <Button type='submit' variant="contained" endIcon={<SendIcon />} size="large" className={classes.button} style={{float:'right'}}>
                   Consultar
                 </Button>
@@ -82,3 +140,9 @@ export default function GetBilind(){
   )
 }
 
+function initialValues() {
+  return {
+    document: ''
+
+  } 
+}
