@@ -1,11 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
+import Grid from '@mui/material/Grid';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
@@ -13,7 +11,7 @@ import CardMedia from '@material-ui/core/CardMedia';
 import banner from '../img/auth.jpg';
 import TextField from '@mui/material/TextField';
 import LoginIcon from '@mui/icons-material/Login';
-import Logo from '../img/logo1.png';
+import { HomeBar } from '../home/homeBar';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useFormik } from 'formik';
@@ -32,13 +30,14 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     height: 300,
+    margin: '1%',
     
   },
   card: {
     paddingLeft: '10%'
   },
   button:{
-    backgroundColor: '#8007A6',
+    backgroundColor: 'rgb(245, 63, 35)',
     color: '#fff'
   }
   
@@ -88,31 +87,24 @@ export default function Login(){
 
   const history = useHistory();
   const routeChange = () =>{ 
-    let path = `/get-bilind`; 
+    let path = `/get-invoice`; 
     history.push(path, {params:token});
   }
 
   return (
     <div>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            Epayco
-          </Typography>
-          <Button color="inherit">Logout</Button>
-        </Toolbar>
-      </AppBar>
+      <HomeBar/>
       <br />
-      <Card className={classes.root}>
+      <Grid container>
+        <Card className={classes.root}>
         <CardActionArea>
+          <Grid item xs={12}>
           <CardMedia
             className={classes.media}
             image={banner}
             title="Contemplative Reptile"
           />
+          </Grid>
           <CardContent className={classes.card}>
             <Typography gutterBottom variant="h5" component="h2">
               Login
@@ -146,7 +138,10 @@ export default function Login(){
           </CardContent>
         </CardActionArea>
         
-    </Card>
+        </Card>
+        
+      </Grid> 
+      
     </div>
   )
 }
