@@ -15,6 +15,8 @@ import { HomeBar } from '../home/homeBar';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { useFormik } from 'formik';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,6 +41,10 @@ const useStyles = makeStyles((theme) => ({
   button:{
     backgroundColor: 'rgb(245, 63, 35)',
     color: '#fff'
+  },
+  input: {
+    marginTop: '1%',
+    marginRight: '2p%'
   }
   
 }));
@@ -66,19 +72,25 @@ export default function Login(){
         
         axios(config)
         .then(function (response) {
-          if(response.data){
+          if(response.data.token){
             token = response.data.token;
             routeChange();
+            localStorage.setItem("token", token);
+
+            toast.info('Bievenido');
+          }
+          else{
+            toast.error(response.data.error);
           }
         })
         .catch(function (error) {
-          console.log(error);
+          toast.error(error.message)
         });
         
         
         
       } catch(error){
-        console.log('error', error.message);
+        toast.error(error.message);
       }
      
     }
@@ -87,8 +99,13 @@ export default function Login(){
 
   const history = useHistory();
   const routeChange = () =>{ 
-    let path = `/get-invoice`; 
-    history.push(path, {params:token});
+    try{
+      let path = `/get-invoice`; 
+      history.push(path, {params:token});
+    } catch(error){
+      toast.error(error.message);
+    }
+    
   }
 
   return (
@@ -110,12 +127,15 @@ export default function Login(){
               Login
             </Typography>
               <form onSubmit={formik.handleSubmit}>
-              <div >
+              <div className={classes.input} >
                 <TextField 
-                  id="outlined-basic" 
-                  label="User" variant="outlined" 
-                  type='text' style={{marginRight:'2%'}}
+                  id="outlined-basic"
+                  label="User" 
+                  variant="outlined" 
+                  type='text'
                   name="username" 
+                  required
+                  style={{marginRight: '2%', marginBottom:'1%'}}
                   onChange={formik.handleChange} 
                   error={formik.errors.username && true} 
                 />
@@ -125,6 +145,7 @@ export default function Login(){
                 variant="outlined" 
                 type='password'
                 name="password" 
+                required
                 onChange={formik.handleChange} 
                 error={formik.errors.password && true} 
                 />
@@ -135,6 +156,7 @@ export default function Login(){
                   Login 
                 </Button>
               </form>
+              <ToastContainer />
           </CardContent>
         </CardActionArea>
         

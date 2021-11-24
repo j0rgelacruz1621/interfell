@@ -1,6 +1,7 @@
 import GetInvoice  from '../invoice/consult';
 import Login from '../auth/login';
 import InvoiceInfo from '../invoice/invoiceInfo';
+import InvoiceDetail from '../payments/invoice';
 
 const routes = [
   {
@@ -11,6 +12,11 @@ const routes = [
   {
     path: '/invoice-info',
     component: InvoiceInfo,
+    exact: true
+  },
+  {
+    path: '/invoice-detail',
+    component: InvoiceDetail,
     exact: true
   },
   {

@@ -16,6 +16,8 @@ import * as Yup from 'yup';
 import { HomeBar } from '../home/homeBar';
 import { useHistory } from "react-router-dom";
 import Grid from '@mui/material/Grid';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -47,7 +49,7 @@ export default function GetInvoice(){
 
   const classes = useStyles();
   const location = useLocation();
-  var token = location.state.params;
+  var token = localStorage.getItem("token");
   let invoices = '';
   const formik = useFormik({
     initialValues: initialValues(),
@@ -73,17 +75,18 @@ export default function GetInvoice(){
         };
         await axios(config)
         .then(function (response) {
-          if(response.data){
+          if(response.data.data.bills.length != 0){
             invoices = response.data.data.bills;
             routeChange();
-            console.log('data bilind',invoices);
+          } else{
+            toast.error('No existe cliente asociado a este identificador');
           }
         })
         .catch(function (error) {
-          console.log(error);
+          toast.error(error.message);
         });        
       } catch(error){
-        console.log('error', error.message);
+        toast.error(error.message);
       }
     }
     
@@ -133,6 +136,7 @@ export default function GetInvoice(){
                       Consultar
                     </Button>
                 </form>
+                <ToastContainer />
             </CardContent>
           </CardActionArea>
           
