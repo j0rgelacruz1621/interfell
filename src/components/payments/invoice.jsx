@@ -130,7 +130,7 @@ export default function InvoiceDetail() {
           <Grid item xs={6} className={classes.header} style= {{padding: '1%'}}>
             Periodos facturados:
           </Grid>
-          <Grid item xs={6} className={classes.result}> 
+          <Grid item xs={6} className={classes.result} style= {{padding: '1%'}}> 
             {invoice.descriptionFirst}
           </Grid>
           <Grid item xs={6}> 

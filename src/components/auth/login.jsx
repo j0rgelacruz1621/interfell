@@ -124,13 +124,13 @@ export default function Login(){
           </Grid>
           <CardContent className={classes.card}>
             <Typography gutterBottom variant="h5" component="h2">
-              Login
+              Autenticar
             </Typography>
               <form onSubmit={formik.handleSubmit}>
               <div className={classes.input} >
                 <TextField 
                   id="outlined-basic"
-                  label="User" 
+                  label="Usuario" 
                   variant="outlined" 
                   type='text'
                   name="username" 
@@ -141,7 +141,7 @@ export default function Login(){
                 />
                 <TextField 
                 id="outlined-basic" 
-                label="Password" 
+                label="Contraseña" 
                 variant="outlined" 
                 type='password'
                 name="password" 
@@ -153,7 +153,7 @@ export default function Login(){
               
               <br /><br />
                 <Button type='submit' variant="contained" endIcon={<LoginIcon />}   size="large" className={classes.button} >
-                  Login 
+                  Acceder
                 </Button>
               </form>
               <ToastContainer />

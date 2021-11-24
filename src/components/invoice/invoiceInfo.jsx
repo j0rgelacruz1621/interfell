@@ -87,25 +87,19 @@ export default function InvoiceInfo() {
                       </Td>
                     </Tr>
                   ))}
-                    <Tr>
-                      <Td>
-                        <Button 
+              </Tbody>
+            </Table>
+            <Button 
                           type='submit' 
                           variant="contained" 
                           endIcon={<LogoutIcon />} 
                           size="medium" 
                           className={classes.button}
+                          style= {{ marginTop: '1%'}}
                           onClick={() => LogoutApp()}
                           >
                           Salir
                         </Button>
-                      </Td>
-                    </Tr>
-               
-                
-                
-              </Tbody>
-            </Table>
           </CardContent>
         </Card>
         
